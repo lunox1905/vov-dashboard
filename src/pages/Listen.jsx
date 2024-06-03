@@ -1,30 +1,10 @@
-import { useState ,useContext} from "react";
-import { useEffect ,useRef} from "react";
-import { SocketError } from "./SocketError";
+import { useEffect, useRef, useState, useContext } from "react";
 import { SocketContext } from "../context/SocketContext";
 import * as mediasoupClient from "mediasoup-client"
 export const Listen = () => {
-    const { socket } = useContext(SocketContext);
+    const { socket, producers } = useContext(SocketContext);
     const audioRef = useRef(null);
-    const [channelSlug, setChanelSlug] = useState('')
-    
-    
-    useEffect(() => {
-        if (socket) {
-            socket.on('connect', () => {
-                console.log('Connected to socket server');
-
-            });
-            socket.on("")
-            // Cleanup on unmount
-            return () => {
-                socket.off('connect');
-                socket.off('message');
-            };
-        }
-    }, [socket]);
-
-
+    const [producerID,setProducerID]=useState(null)
     let device
     let rtpCapabilities
     let consumerTransport
@@ -36,8 +16,8 @@ export const Listen = () => {
     //     video.src = ''
     // })
 
-    const goConsume = (channelSlug) => {
-        setChanelSlug(channelSlug)
+    const goConsume = (producerID) => {
+        setProducerID(producerID)
         device === undefined ? getRtpCapabilities() : createRecvTransport()
     }
     const getRtpCapabilities = () => {
@@ -65,7 +45,7 @@ export const Listen = () => {
         }
     }
 
-    
+
 
     const createRecvTransport = async () => {
         console.log('stage3');
@@ -100,7 +80,7 @@ export const Listen = () => {
         console.log('stage4');
         await socket.emit('consume', {
             rtpCapabilities: device.rtpCapabilities,
-            channelSlug: channelSlug
+            producerID:producerID
         }, async ({ params }) => {
 
             if (params.error) {
@@ -116,7 +96,7 @@ export const Listen = () => {
             })
             const { track } = consumer
             let audiostream = new MediaStream([track])
-            
+
             audioRef.current.srcObject = audiostream
         })
     }
@@ -130,32 +110,28 @@ export const Listen = () => {
     }, [])
     return (
         <>
-            {
-                socket != null ? <>
                     <div className="p-3">
 
                         <div id="sharedBtns">
                             <audio ref={audioRef} id="remoteVideo" autoPlay ></audio>
                         </div>
 
-                        <div id="sharedBtns">
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => goConsume('kenh1')}>Nghe kênh 1</button>
-                        </div>
+                        {producers && Object.entries(producers).map(([channel, map_channel]) => (
+                            map_channel.map((stream, index) => {
 
-                        <div id="sharedBtns">
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => goConsume('kenh2')}>Nghe kênh 2</button>
-                        </div>
-
-                        <div id="sharedBtns">
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => goConsume('kenh3')}>Nghe kênh 3</button>
-                        </div>
+                                return (
+                                    <div key={index} className="flex justify-between gap-3 align-middle">
+                                        <p><b> Channel: </b>{channel}</p>
+                                        <p><b>Slug: </b>{stream.slug}</p>
+                                        <p> <b>Id: </b> {stream.id}</p>
+                                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => goConsume('kenh1')}>Nghe </button>
+                                    </div>
+                                )
+                            })
+                        ))
+                        }
+                        
                     </div>
-                </> : <>
-                
-                    <SocketError/>
-                    </>
-             }
-          
         </>
     )
 }

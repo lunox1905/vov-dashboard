@@ -13,6 +13,7 @@ import Layout from './views/Layout';
 import { Play } from './pages/Play';
 import { SocketProvider } from './context/SocketContext';
 import { Listen } from './pages/Listen';
+import { Dashboard } from './pages/Dashboard';
 function App() {
 
 
@@ -21,6 +22,7 @@ function App() {
 
       <Route path='/' element={<Layout />}>
         <Route path="" element={<Home />}>
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="play" element={<Play />} />
           <Route path='listen' element={<Listen />} />
         </Route>

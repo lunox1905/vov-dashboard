@@ -6,6 +6,7 @@ const SocketContext = createContext();
     const SERVER_URL = import.meta.env.SERVER_URL || 'http://localhost:3000/mediasoup';
     const socket = useRef(null);
     const [isConnected, setIsConnected] = useState(false);
+     const [producers,setProducers]=useState(null)
      useEffect(() => {
         const initializeWebSocket = () => {
             console.log("URL", SERVER_URL)
@@ -44,8 +45,26 @@ const SocketContext = createContext();
         };
     }, []);
 
+     useEffect(() => {
+         if (socket) {
+             setInterval(() => {
+                 console.log("emit get-stream")
+                 socket.current.emit("get-streams")
+             }, 4000)
+             socket.current.on("receive-streams", data => {
+                 console.log("dataList", data)
+                 setProducers(data)
+             })
+             // Cleanup on unmount
+             return () => {
+                 socket.current.off("active-stream");
+                 socket.current.off('connect');
+                 socket.current.off('message');
+             };
+         }
+     }, [socket]);
     return (
-        <SocketContext.Provider value={{ socket: socket.current, isConnected }}>
+        <SocketContext.Provider value={{ socket: socket.current, isConnected:isConnected, producers:producers }}>
             {children}
         </SocketContext.Provider>
     );
