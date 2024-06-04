@@ -1,7 +1,7 @@
-import { useState,useContext ,useEffect} from "react"
+import { useContext } from "react"
 import { SocketContext } from "../context/SocketContext"
 export const Dashboard = () => {
-    const { socket,producers } = useContext(SocketContext)
+    const { producers } = useContext(SocketContext)
     return (
         <>
             <div>

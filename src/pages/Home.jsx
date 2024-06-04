@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { SocketContext } from "../context/SocketContext";
 import { Outlet } from "react-router-dom";
 import { VerticalNav } from "../components/VerticalNav";

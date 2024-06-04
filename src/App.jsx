@@ -1,19 +1,17 @@
-
-import { Home } from './pages/Home'
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
   RouterProvider,
-  Routes
 } from 'react-router-dom'
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Layout from './views/Layout';
-import { Play } from './pages/Play';
+import { Channel } from './pages/Channel';
 import { SocketProvider } from './context/SocketContext';
-import { Listen } from './pages/Listen';
 import { Dashboard } from './pages/Dashboard';
+import { Home } from './pages/Home';
 function App() {
 
 
@@ -23,8 +21,7 @@ function App() {
       <Route path='/' element={<Layout />}>
         <Route path="" element={<Home />}>
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="play" element={<Play />} />
-          <Route path='listen' element={<Listen />} />
+          <Route path="channel" element={<Channel />} />
         </Route>
       </Route>
     )
