@@ -1,4 +1,6 @@
 import {  useNavigate } from 'react-router-dom';
+import React from 'react';
+
 export const VerticalNav = () => {
     const navigate = useNavigate();
     const navigateTo = (subpath) => {
