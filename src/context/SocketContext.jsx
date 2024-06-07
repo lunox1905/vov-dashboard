@@ -1,7 +1,8 @@
-import React, { createContext, useRef, useContext, useEffect, useState } from 'react';
+import React, { createContext, useRef, useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
 const SocketContext = createContext();
+ // eslint-disable-next-line react/prop-types
  const SocketProvider = ({ children }) => {
     const SERVER_URL = import.meta.env.SERVER_URL || 'http://localhost:3000/mediasoup';
     const socket = useRef(null);
