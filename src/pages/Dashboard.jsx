@@ -1,6 +1,5 @@
 import { React, useContext, useEffect, useState } from "react"
 import Card from 'react-bootstrap/Card';
-
 import { SocketContext } from "../context/SocketContext"
 export const Dashboard = () => {
     const { socket } = useContext(SocketContext);
@@ -19,23 +18,11 @@ export const Dashboard = () => {
     }, [socket]);
 
     return (
+        <>
         <div className="p-4 w-full">
             <h1 className="text-xl mb-3">Dashboard</h1>
             <div className="flex justify-between">
-                {/* {producers && Object.entries(producers).map(([channel, map_channel]) => (
-                    map_channel.map((stream, index) => {
-                        
-                        return (
-                            <div key={index} className="flex justify-between gap-3">
-                                <p><b> Channel: </b>{channel}</p>
-                                <p><b>Slug: </b>{ stream.slug}</p>
-                                <p> <b>Id: </b> {stream.id}</p>
-                                
-                            </div>
-                        )
-                    } )      
-                ))
-                } */}
+              
                 <Card
                     bg={'primary'}
                     key={'d'}
@@ -93,6 +80,7 @@ export const Dashboard = () => {
                     </Card.Body>
                 </Card>
             </div>
-        </div>
+            </div>
+        </>
     )
 }

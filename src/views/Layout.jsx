@@ -1,11 +1,14 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-
-// import { HorizontalNav } from '../components/HorizontalNav';
+import { BaseNav } from '../components/BaseNav';
+import { Authednav } from '../components/AuthedNav';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 function Layout() {
+    const { isLoggedIn } = useContext(AuthContext);
     return (
         <div >
-            {/* <HorizontalNav /> */}
+            {/* {isLoggedIn ? <Authednav /> : <BaseNav />}        */}
             <Outlet />
         </div>
     );

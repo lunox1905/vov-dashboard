@@ -16,6 +16,9 @@ import { Dashboard } from './pages/Dashboard';
 import { Home } from './pages/Home';
 import Login from './pages/Login';
 import { AuthContext } from './context/AuthContext';
+import { Landing } from './pages/Landing';
+import { Signup } from "./pages/Signup"
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -26,16 +29,17 @@ function App() {
         <Route
           path="/"
           element={
-            isLoggedIn ? <Home/> : <Navigate to="/login" />
+            isLoggedIn ? <Home/> : <Landing/>
           }
         >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="channel" element={<Channel />} />
         </Route>
         <Route path="login" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
         <Route
           path="*"
-          element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/login" replace />}
+          element={isLoggedIn ? <Navigate to="/" replace /> : <Landing/>}
         />
       </Route>
     )

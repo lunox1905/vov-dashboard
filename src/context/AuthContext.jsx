@@ -2,12 +2,22 @@ import React, { createContext, useState, useContext } from 'react';
 
 
 export const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
-
-// eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  window.addEventListener('storage', () => {
+    // console.log("Change to local storage!");
+    if ( !localStorage.getItem("authToken")) {
+      setIsLoggedIn(false)
+    return 
+    }
+    if (localStorage.getItem("authToken")) {
+      setIsLoggedIn(true)
+      return
+    }
+
+    // ...
+  })
   const login = () => {
     // Thực hiện logic đăng nhập, có thể là gọi API, xác thực v.v.
     setIsLoggedIn(true);
