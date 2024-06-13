@@ -1,19 +1,50 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const Login = () => {
-	const { login } = useContext(AuthContext);
-	const [username, setUsername] = useState('');
+	const {login}=useContext(AuthContext)
+	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const navigate = useNavigate()
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		if (username === 'admin' && password === '123123') {
-			login()
-			navigate('/dashboard')
+	const [error, setError] = useState("")
+	useEffect(() => {
+		if (error) {
+			toast.error(error)
 		}
+	}, [error])
+	const handleSubmit = () => {
+		signIn()
 	};
+
+	const signIn = async ( ) => {
+		try {
+			const response = await axios.post("http://127.0.0.1:3000/auth/login", {
+				email: email,
+				password: password
+
+			})
+			if (!response.data || response.data.status === "error") {
+				console.log("cli1")
+				return setError("Cannot login")
+			}
+			if (!response.data.token) {
+				console.log("cl2")
+				return setError("Do not receive token")
+			}
+			toast.success("Login successfully !")
+			localStorage.setItem('authToken', response.data.token)
+			login()
+		} catch (error) {
+			if (error.response?.data?.message) {
+				return setError(error.response?.data?.message)
+			}
+			setError(error.message)
+		}
+	}
+	
 	const navigateTo = (path) => {
 		navigate(path)
 	}
@@ -29,8 +60,8 @@ const Login = () => {
 						<input
 							type="text"
 							id="username"
-							value={username}
-							onChange={(e) => setUsername(e.target.value)}
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
 							className="w-full px-3 py-2 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-500"
 							placeholder="Username"
 							required
@@ -57,7 +88,7 @@ const Login = () => {
 					</div>
 					<div>
 						<button
-							type="submit"
+							type="button" onClick={()=>handleSubmit()}
 							className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 						>
 							LOGIN

@@ -4,29 +4,19 @@ import React, { createContext, useState, useContext } from 'react';
 export const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  window.addEventListener('storage', () => {
-    // console.log("Change to local storage!");
-    if ( !localStorage.getItem("authToken")) {
-      setIsLoggedIn(false)
-    return 
-    }
+const [isLoggedIn, setIsLoggedIn] = useState(true);
+const login = () => {
     if (localStorage.getItem("authToken")) {
-      setIsLoggedIn(true)
-      return
+      setIsLoggedIn(true);
     }
-
-    // ...
-  })
-  const login = () => {
-    // Thực hiện logic đăng nhập, có thể là gọi API, xác thực v.v.
-    setIsLoggedIn(true);
-  };
-
+  }
   const logout = () => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      localStorage.removeItem('authToken');
+    }
     setIsLoggedIn(false);
-  };
-
+  }
   return (
     <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
       {children}

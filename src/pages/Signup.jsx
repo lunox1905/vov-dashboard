@@ -9,11 +9,11 @@ export const Signup = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate()
-    const [error,setError]=useState("")
-    const handleSubmit =  (e) => {
+    const [error, setError] = useState("")
+    const handleSubmit = (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            return setError("Confirm password does not mathc")
+            return setError("Confirm password does not match")
         }
         if (!email) {
             return setError("Email is empty")
@@ -21,36 +21,37 @@ export const Signup = () => {
         if (!password) {
             return setError("Password is empty")
         }
-       register(email,password)
+        register(email, password)
 
     };
 
     const register = async (email, password) => {
         try {
-            console.log("email,pass",email,password)
-            const response = await axios.post("http://localhost:3000/auth/register", {
+            const response = await axios.post("http://127.0.0.1:3000/auth/register", {
                 email: email,
                 password: password
-
             })
-            if (!response.data.token) {
-                return setError("Cannot get token")
+            if (!response.data || response.data.status === "error") {
+                return setError("Cannot register")
             }
-            localStorage.setItem('authToken', response.data.token)
-            window.dispatchEvent(new Event("storage"));
-toast.success("Registered successfully !")
+            console.log("res",response.data)
+            toast.success("Registered successfully !")
+            setTimeout(() => {
+                navigate("/")
+            }, 1000);
         } catch (error) {
-            setError(error)
+            if (error.response?.data?.message) {
+                return setError(error.response?.data?.message)
+            }
+            setError(error.message)
         }
     }
     useEffect(() => {
         if (error) {
             toast.error(error)
         }
-    },[error])
-    const navigateTo = (path) => {
-        navigate(path)
-    }
+    }, [error])
+
     return (
         <div className="min-h-screen flex items-center justify-center ">
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">
@@ -99,8 +100,8 @@ toast.success("Registered successfully !")
                         />
                     </div>
                     <div className="flex items-center justify-between mb-6">
-                        <p  className=" cursor-pointer text-sm text-blue-500 hover:text-blue-800">Forgot password?</p>
-                        <p  className="cursor-pointer text-sm text-blue-500 hover:text-blue-800" onClick={()=>{navigate("/")}}>Return home page</p>
+                        <p className=" cursor-pointer text-sm text-blue-500 hover:text-blue-800">Forgot password?</p>
+                        <p className="cursor-pointer text-sm text-blue-500 hover:text-blue-800" onClick={() => { navigate("/") }}>Return home page</p>
                     </div>
                     <div>
                         <button
