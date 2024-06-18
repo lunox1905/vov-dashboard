@@ -19,7 +19,7 @@ export const Dashboard = () => {
 
     return (
         <>
-        <div className="p-4 w-full">
+        <div className=" w-full">
             <h1 className="text-xl mb-3">Dashboard</h1>
             <div className="flex justify-between">
               

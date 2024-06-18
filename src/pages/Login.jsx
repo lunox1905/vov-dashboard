@@ -9,6 +9,7 @@ const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const navigate = useNavigate()
+
 	const [error, setError] = useState("")
 	useEffect(() => {
 		if (error) {
@@ -37,6 +38,7 @@ const Login = () => {
 			toast.success("Login successfully !")
 			localStorage.setItem('authToken', response.data.token)
 			login()
+			navigateTo("/")
 		} catch (error) {
 			if (error.response?.data?.message) {
 				return setError(error.response?.data?.message)

@@ -9,7 +9,7 @@ export const VerticalNav = () => {
     return (
         <>
             <div className="min-h-screen flex items-start justify-center bg-gray-100 ">
-                <div className="flex min-h-screen w-full max-w-xs p-4 bg-white">
+                <div className="flex min-h-screen w-full max-w-xs p-2 bg-white">
                     <ul className="flex flex-col w-full">
                         <li className="my-px">
                             <a href="#"
