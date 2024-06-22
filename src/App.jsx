@@ -19,7 +19,7 @@ import { AuthContext } from './context/AuthContext';
 import { Landing } from './pages/Landing';
 import { Signup } from "./pages/Signup"
 import 'react-toastify/dist/ReactToastify.css';
-
+import { Notification } from './pages/Notification';
 function App() {
   const { isLoggedIn } = useContext(AuthContext);
 
@@ -29,13 +29,14 @@ function App() {
         <Route
           path="/"
           element={
-            isLoggedIn ? <Home/> : <Landing/>
+            isLoggedIn ? <Home /> : <Login />
           }
         >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="channel" element={<Channel />} />
+          <Route path="notification" element={<Notification/>} />
         </Route>
-        <Route path="login" element={<Login />} />
+        {/* <Route path="login" element={<Login />} /> */}
         <Route path="signup" element={<Signup />} />
         <Route
           path="*"

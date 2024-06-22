@@ -38,7 +38,7 @@ const Login = () => {
 			toast.success("Login successfully !")
 			localStorage.setItem('authToken', response.data.token)
 			login()
-			navigateTo("/")
+			navigateTo("/dashboard")
 		} catch (error) {
 			if (error.response?.data?.message) {
 				return setError(error.response?.data?.message)
@@ -84,8 +84,8 @@ const Login = () => {
 						/>
 					</div>
 					<div className="flex items-center justify-between mb-6">
-						<p  className="text-sm text-blue-500 hover:text-blue-800">Forgot password?</p>
-						<p className="cursor-pointer text-sm text-blue-500 hover:text-blue-800" onClick={()=>{navigateTo("/")}}> Return Home Page</p>
+						{/* <p  className="text-sm text-blue-500 hover:text-blue-800">Forgot password?</p> */}
+						{/* <p className="cursor-pointer text-sm text-blue-500 hover:text-blue-800" onClick={()=>{navigateTo("/")}}> Return Home Page</p> */}
 
 					</div>
 					<div>

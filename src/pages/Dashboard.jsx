@@ -45,7 +45,7 @@ export const Dashboard = () => {
                     className="mb-2"
                 >
                     <Card.Body>
-                        <Card.Title> Strean </Card.Title>
+                        <Card.Title> Stream </Card.Title>
                         <Card.Text>
                         Có {info.amountStream} luồng trong hệ thống
                         </Card.Text>
