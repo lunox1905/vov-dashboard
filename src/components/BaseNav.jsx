@@ -50,7 +50,7 @@ export const BaseNav = () => {
                     </ul>
             
                     <p  className=" cursor-pointer hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200" onClick={()=>navigateTo("/login")  }> Login</p>
-                    <p  className="cursor-pointer hidden lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200" onClick={()=>navigateTo("/signup")  }> Sign up</p>
+                    {/* <p  className="cursor-pointer hidden lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200" onClick={()=>navigateTo("/signup")  }> Sign up</p> */}
 
                 </nav>
                 <div className="navbar-menu relative z-50 hidden">

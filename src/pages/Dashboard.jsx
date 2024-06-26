@@ -7,6 +7,7 @@ export const Dashboard = () => {
     useEffect(() => {
         if (socket) {
             socket.emit('info-dashboard', (data) => {
+                console.log(data)
                 setInfo(data)
             })
             // Cleanup on unmount
@@ -19,7 +20,7 @@ export const Dashboard = () => {
 
     return (
         <>
-        <div className="p-4 w-full">
+        <div className=" w-full">
             <h1 className="text-xl mb-3">Dashboard</h1>
             <div className="flex justify-between">
               
@@ -45,7 +46,7 @@ export const Dashboard = () => {
                     className="mb-2"
                 >
                     <Card.Body>
-                        <Card.Title> Strean </Card.Title>
+                        <Card.Title> Stream </Card.Title>
                         <Card.Text>
                         Có {info.amountStream} luồng trong hệ thống
                         </Card.Text>

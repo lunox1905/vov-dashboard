@@ -7,9 +7,11 @@ import EditIcon from "../assets/editIcon";
 import DetailIcon from "../assets/detailIcon";
 import ModelComponent from "../components/Model";
 import ModelAddChannel from "../components/ModelAddChannel";
+import { ChannelContext } from "../context/ChannelContext";
 
 export const Channel = () => {
     const { socket } = useContext(SocketContext);
+    const { listChannel, createChannel } = useContext(ChannelContext);
     const [ listPro, setListPro] = useState([]);
     const [ openModel, setOpenModel ] = useState(false)
     const [ openModelAddChannel, setOpenModelAddChannel ] = useState(false)
@@ -17,6 +19,7 @@ export const Channel = () => {
         id: "",
         name: ""
     })
+    console.log(import.meta.env.VITE_URL)
     useEffect(() => {
         if (socket) {
             socket.on('connect', () => {
@@ -44,22 +47,36 @@ export const Channel = () => {
         }
     }, [socket]);
 
-    const handleDelete = (name, id) => {
+    useEffect(() => {
+        listChannel()
+        .then(res => {
+            console.log(res)
+        })
+    }, []);
+
+    const handleDelete = (channelId, id) => {
         setDataDelete({
             id,
-            name
+            channelId
         })
         setOpenModel(true)
         console.log(dataDelete)
     }
 
     const deletePro = () => {
-        console.log(listPro)
-        socket.emit('delete-producer', { name: dataDelete.name ,id: dataDelete.id})
+        console.log(dataDelete)
+        socket.emit('delete-producer', { channelId: dataDelete.channelId ,id: dataDelete.id})
         setOpenModel(false)
     }
 
-    const hanldeAddChannel = ({ name, link, note, uid }) => {
+    const hanldeAddChannel = ({ name, description }) => {
+        createChannel({name, description})
+        .then(res => {
+            console.log("RES::::", res)
+        })
+    } 
+
+    const hanldeAddStream = ({ name, link, note, uid }) => {
         socket.emit('link-stream', { name, link, note, uid})
     } 
 
@@ -128,7 +145,7 @@ export const Channel = () => {
                                                 <div>
                                                 <DetailIcon/>
                                                 </div>
-                                                <div onClick={() => handleDelete(pro.name, pro.id)}>
+                                                <div onClick={() => handleDelete(item.id, pro.id)}>
                                                     <Trash/>
                                                 </div>
                                             </div>
