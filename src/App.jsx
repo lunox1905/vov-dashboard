@@ -29,7 +29,7 @@ function App() {
         <Route
           path="/"
           element={
-            isLoggedIn ? <Home/> : <Landing/>
+            isLoggedIn ? <Home/> : <Login />
           }
         >
           <Route path="dashboard" element={<Dashboard />} />
