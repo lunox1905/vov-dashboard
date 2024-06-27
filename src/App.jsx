@@ -5,7 +5,7 @@ import {
   RouterProvider,
   Navigate,
 } from 'react-router-dom';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,6 +23,7 @@ import { Notification } from './pages/Notification';
 import { Setting } from "./pages/Setting"
 
 function App() {
+ 
   const { isLoggedIn } = useContext(AuthContext);
 
   const router = createBrowserRouter(
@@ -39,8 +40,6 @@ function App() {
           <Route path="notification" element={<Notification/>} />
           <Route path="setting" element={<Setting/>} />
         </Route>
-        {/* <Route path="login" element={<Login />} /> */}
-        <Route path="signup" element={<Signup />} />
         <Route
           path="*"
           element={isLoggedIn ? <Navigate to="/" replace /> : <Landing/>}

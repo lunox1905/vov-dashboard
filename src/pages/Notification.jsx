@@ -2,7 +2,7 @@ import { React, useEffect, useState, useContext } from "react";
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { SocketContext } from "../context/SocketContext";
-
+import { PaginationNoti } from "../components/PaginationNoti";
 export const Notification = () => {
     const [logs, setLogs] = useState([])
     const [error, setError] = useState("")
@@ -41,60 +41,10 @@ export const Notification = () => {
         })
     }
     
-    const convertTime = (isoDateString) => {
-        const date = new Date(isoDateString);
-        const humanReadableTime = date.toUTCString(); // Example: "Thu, 22 Jun 2024 01:49:35 GMT"
-        return humanReadableTime
-    }
     return (
         <>
-            <div className="w-screen px-2">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Content</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level</th>
-
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {logs && logs.map((log, idx) => {
-                            return (
-                                <tr key={idx}>
-                                    <td className="px-6 py-4 whitespace-nowrap">{convertTime(log.created_at)}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">{log.title}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap"> {log.content}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">  {log.level}</td>
-
-                                </tr>
-                                // <div key={idx} className="flex justify-around">
-                                //     <span>
-                                //         {log.title}
-
-                                //     </span>
-                                //     <span>
-                                //         {log.content}
-                                //     </span>
-                                //     <span>
-                                //         {log.level}
-                                //     </span>
-                                // </div>
-                            )
-                        })}
-
-                    </tbody>
-                </table>
-                <ul>
-
-
-                </ul>
-
-
-
-            </div>
+            
+            <PaginationNoti items={ logs} itemsPerPage={8} />
         </>
     )
 }
