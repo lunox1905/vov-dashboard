@@ -9,7 +9,8 @@ import ModelComponent from "../components/Model";
 import ModelAddChannel from "../components/ModelAddChannel";
 import ModelEditChannel from "../components/ModelEditChannel.jsx";
 import { toast } from 'react-toastify';import { ChannelContext } from "../context/ChannelContext";
-
+import ModelEditChannel from "../components/ModelEditChannel.jsx";
+import { toast } from 'react-toastify';
 export const Channel = () => {
     const { socket } = useContext(SocketContext);
     const { listChannel, createChannel } = useContext(ChannelContext);
@@ -25,6 +26,7 @@ export const Channel = () => {
     })
     const hlsLink="http://examples.hls"
     console.log(import.meta.env.VITE_URL)
+    const hlsLink="http://examples.hls"
     useEffect(() => {
         if (socket) {
             socket.on('connect', () => {
