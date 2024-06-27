@@ -43,9 +43,18 @@ export const Notification = () => {
     
     const convertTime = (isoDateString) => {
         const date = new Date(isoDateString);
-        const humanReadableTime = date.toUTCString(); // Example: "Thu, 22 Jun 2024 01:49:35 GMT"
-        return humanReadableTime
+
+        // Convert the date to ICT (Indochina Time) and format it
+        const options = {
+            timeZone: 'Asia/Bangkok', hour12: false,
+            year: 'numeric', month: 'long', day: 'numeric',
+            hour: 'numeric', minute: 'numeric', second: 'numeric'
+        };
+        const ictDateStr = date.toLocaleString('en-US', options);
+
+        return ictDateStr;
     }
+    
     return (
         <>
             <div className="w-screen px-2">
