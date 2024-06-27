@@ -27,15 +27,16 @@ export const ChannelProvider = ({ children }) => {
         }
     }
 
-    const updateChannel = async () => {
+    const updateChannel = async (data) => {
         try {
-            const res = await axios.post(`${URL}/channel/update`)
-            return res.data;
-        } catch (e){
-            console.log('ERROR::' + e)
+            const url = `${URL}/channel/update`
+            const res = await axios.post(url, data)
+        } catch (error) {
+            console.log('ERROR::' + error)
+            return error.message
         }
     }
-
+    
   return (
     <ChannelContext.Provider value={{ createChannel, listChannel, updateChannel }}>
       {children}

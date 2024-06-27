@@ -5,7 +5,7 @@ import {
   RouterProvider,
   Navigate,
 } from 'react-router-dom';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -21,6 +21,7 @@ import { Signup } from "./pages/Signup"
 import 'react-toastify/dist/ReactToastify.css';
 import { Notification } from './pages/Notification';
 function App() {
+ 
   const { isLoggedIn } = useContext(AuthContext);
 
   const router = createBrowserRouter(
@@ -36,8 +37,6 @@ function App() {
           <Route path="channel" element={<Channel />} />
           <Route path="notification" element={<Notification/>} />
         </Route>
-        {/* <Route path="login" element={<Login />} /> */}
-        <Route path="signup" element={<Signup />} />
         <Route
           path="*"
           element={isLoggedIn ? <Navigate to="/" replace /> : <Landing/>}

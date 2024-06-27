@@ -8,25 +8,24 @@ import DetailIcon from "../assets/detailIcon";
 import ModelComponent from "../components/Model";
 import ModelAddChannel from "../components/ModelAddChannel";
 import ModelEditChannel from "../components/ModelEditChannel.jsx";
-import { toast } from 'react-toastify';import { ChannelContext } from "../context/ChannelContext";
-import ModelEditChannel from "../components/ModelEditChannel.jsx";
 import { toast } from 'react-toastify';
+import { ChannelContext } from "../context/ChannelContext";
+import axios from "axios";
 export const Channel = () => {
     const { socket } = useContext(SocketContext);
-    const { listChannel, createChannel } = useContext(ChannelContext);
+    const {  listChannel, createChannel,updateChannel } = useContext(ChannelContext);
     const [ listPro, setListPro] = useState([]);
     const [ openModel, setOpenModel ] = useState(false)
     const [ openModelAddChannel, setOpenModelAddChannel ] = useState(false)
     const [openModelEditChannel,setOpenModelEditChannel] =useState(false)
-    const [currentChannel,setCurrentChannel]=useState("")
-    // let currentChannel=""
+    const [currentChannel,setCurrentChannel]=useState(null)
     const [dataDelete, setDataDelete] = useState({
         id: "",
         name: ""
     })
+
     const hlsLink="http://examples.hls"
     console.log(import.meta.env.VITE_URL)
-    const hlsLink="http://examples.hls"
     useEffect(() => {
         if (socket) {
             socket.on('connect', () => {
@@ -35,6 +34,7 @@ export const Channel = () => {
 
             socket.emit('list-producer')
             socket.on('emit-list-producer', (data) => {
+                
                 const logTime= getCurrentTimeInICT()
                 console.log(logTime ," listen emit-list-producer",data)
                 setListPro(data)
@@ -48,9 +48,8 @@ export const Channel = () => {
                 socket.emit('list-producer')
             })
             socket.on("error", (data) => {
-                
+                toast.error(data)
             })
-            // Cleanup on unmount
             return () => {
                 socket.off('connect');
                 socket.off('message');
@@ -80,16 +79,38 @@ export const Channel = () => {
         setOpenModel(false)
     }
 
-    const hanldeAddChannel = ({ name, description }) => {
+    const handleAddChannel = ({ name, description }) => {
         createChannel({name, description})
         .then(res => {
             console.log("RES::::", res)
         })
     } 
 
-    const hanldeAddStream = ({ name, link, note, uid }) => {
+    const handleAddStream = ({ name, link, note, uid }) => {
         socket.emit('link-stream', { name, link, note, uid})
     } 
+    const handleDeleteChannel = (id) => {
+        
+    }
+    const handleSubmitChannelName = async (id, newName) => {
+
+        try {
+            console.log("update",id,newName)
+            updateChannel({
+                id: id,
+                name:newName
+            }).then(res => {
+                console.log("RES::::", res)
+                if (res) {
+                    toast.error(res)
+                return
+                }
+                toast.success("Successfully update name")
+            })
+        } catch (error) {
+            toast.error(error)
+        }
+    }
     function getCurrentTimeInICT() {
         const date = new Date();
         const options = {
@@ -106,15 +127,9 @@ export const Channel = () => {
 
         return ictDateStr;
     }
-    const handleSubmitChannelName = (newName, oldName) => {
-        console.log("submit ", newName, oldName)
-        socket.emit("update-channel-name", {
-            newName:newName,
-            oldName:oldName
-        })
-    }
-    const openEditModal = (channelName) => {
-        setCurrentChannel(channelName)
+  
+    const openEditModal = (channel) => {
+        setCurrentChannel(channel)
         setOpenModelEditChannel(true)
 
     }
@@ -130,13 +145,14 @@ export const Channel = () => {
                 />
 
             }
-        <ModelAddChannel show={openModelAddChannel} setShow={setOpenModelAddChannel} handle={hanldeAddChannel}/>
+        <ModelAddChannel show={openModelAddChannel} setShow={setOpenModelAddChannel} handle={handleAddChannel}/>
             <ModelEditChannel
                 show={openModelEditChannel}
                 setShow={setOpenModelEditChannel} 
-                channelName={currentChannel}
+                channel={currentChannel}
                 handleSubmitChannelName={handleSubmitChannelName}
-                hlsLink={hlsLink}
+                handleAddStream={handleAddStream}
+                handleDeleteChannel={handleDeleteChannel}
             />
             <div className="w-11/12">
             
@@ -152,7 +168,8 @@ export const Channel = () => {
                         <th>Loại luồng</th>
                         <th>Trạng thái</th>
                         <th>Cổng</th>
-                        <th>Mô tả</th>
+                            <th>Mô tả</th>
+                            <th> Hls link</th>
                         <th className="text-center">Hành động</th>
                     </tr>
                 </thead>
@@ -166,7 +183,10 @@ export const Channel = () => {
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td></td>
+                                    <td></td>
+                                    <td> http://example.com </td>
+
+                                    <td onClick={()=>openEditModal(item)} className="text-center cursor-pointer"> . . .</td>
                             </tr>
                             {
                                 item.streams.map(pro => (
