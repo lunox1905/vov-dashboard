@@ -7,16 +7,21 @@ import EditIcon from "../assets/editIcon";
 import DetailIcon from "../assets/detailIcon";
 import ModelComponent from "../components/Model";
 import ModelAddChannel from "../components/ModelAddChannel";
-
+import ModelEditChannel from "../components/ModelEditChannel.jsx";
+import { toast } from 'react-toastify';
 export const Channel = () => {
     const { socket } = useContext(SocketContext);
     const [ listPro, setListPro] = useState([]);
     const [ openModel, setOpenModel ] = useState(false)
     const [ openModelAddChannel, setOpenModelAddChannel ] = useState(false)
-    const [ dataDelete, setDataDelete ] = useState({
+    const [openModelEditChannel,setOpenModelEditChannel] =useState(false)
+    const [currentChannel,setCurrentChannel]=useState("")
+    // let currentChannel=""
+    const [dataDelete, setDataDelete] = useState({
         id: "",
         name: ""
     })
+    const hlsLink="http://examples.hls"
     useEffect(() => {
         if (socket) {
             socket.on('connect', () => {
@@ -25,7 +30,8 @@ export const Channel = () => {
 
             socket.emit('list-producer')
             socket.on('emit-list-producer', (data) => {
-                console.log(data)
+                const logTime= getCurrentTimeInICT()
+                console.log(logTime ," listen emit-list-producer",data)
                 setListPro(data)
             })
 
@@ -35,6 +41,9 @@ export const Channel = () => {
 
             socket.on('emit-delete-producer-sucess', () => {
                 socket.emit('list-producer')
+            })
+            socket.on("error", (data) => {
+                
             })
             // Cleanup on unmount
             return () => {
@@ -62,7 +71,34 @@ export const Channel = () => {
     const hanldeAddChannel = ({ name, link, note, uid }) => {
         socket.emit('link-stream', { name, link, note, uid})
     } 
+    function getCurrentTimeInICT() {
+        const date = new Date();
+        const options = {
+            timeZone: 'Asia/Bangkok',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: false
+        };
+        const ictDateStr = date.toLocaleString('en-US', options);
 
+        return ictDateStr;
+    }
+    const handleSubmitChannelName = (newName, oldName) => {
+        console.log("submit ", newName, oldName)
+        socket.emit("update-channel-name", {
+            newName:newName,
+            oldName:oldName
+        })
+    }
+    const openEditModal = (channelName) => {
+        setCurrentChannel(channelName)
+        setOpenModelEditChannel(true)
+
+    }
     return (
         <>
             {
@@ -76,7 +112,14 @@ export const Channel = () => {
 
             }
         <ModelAddChannel show={openModelAddChannel} setShow={setOpenModelAddChannel} handle={hanldeAddChannel}/>
-        <div className="w-11/12">
+            <ModelEditChannel
+                show={openModelEditChannel}
+                setShow={setOpenModelEditChannel} 
+                channelName={currentChannel}
+                handleSubmitChannelName={handleSubmitChannelName}
+                hlsLink={hlsLink}
+            />
+            <div className="w-11/12">
             
             <div className="w-11/12 flex justify-between my-10">
                 <h1>Quản lý kênh</h1>
@@ -99,7 +142,7 @@ export const Channel = () => {
                         listPro?.map(item => (
                             <>
                             <tr key={item.name} className="h-12 border-t-2 px-3">
-                                <td className="px-3 w-[150px]">{item.name}</td>
+                                <td className="px-3 w-[150px]">{item.name} </td>
                                 <td className="w-[120px]">{item.streams.length}</td>
                                 <td></td>
                                 <td></td>
@@ -121,14 +164,12 @@ export const Channel = () => {
                                         <td>{pro.port}</td>
                                         <td>{pro.descripton}</td>
                                         <td className="w-[120px]">
-                                            <div className="w-full flex justify-around">
-                                                <div>
-                                                    <EditIcon/>
+                                            <div  className=" w-full flex justify-around">
+                                                < div className="cursor-pointer" onClick={() => openEditModal(item.name)}>
+                                                    <EditIcon />
                                                 </div>
-                                                <div>
-                                                <DetailIcon/>
-                                                </div>
-                                                <div onClick={() => handleDelete(pro.name, pro.id)}>
+                        
+                                                <div className="cursor-pointer" onClick={() => handleDelete(pro.name, pro.id)}>
                                                     <Trash/>
                                                 </div>
                                             </div>
