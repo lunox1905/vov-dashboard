@@ -207,10 +207,8 @@ export const Channel = () => {
                                                 < div className="cursor-pointer" onClick={() => openEditModal(item.name)}>
                                                     <EditIcon />
                                                 </div>
-                                                <div>
-                                                <DetailIcon/>
-                                                </div>
-                                                <div onClick={() => handleDelete(item.id, pro.id)}>
+                        
+                                                <div className="cursor-pointer" onClick={() => handleDelete(pro.name, pro.id)}>
                                                     <Trash/>
                                                 </div>
                                             </div>
