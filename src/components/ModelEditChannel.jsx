@@ -11,7 +11,7 @@ const ModelEditChannel = (props) => {
     const [streamName, setStreamName] = useState("")
     const inputChannelName=useRef(null)
     useEffect(() => {
-        if (channel?.name&& inputChannelName?.current?.value) {
+        if (channel?.name) {
             inputChannelName.current.value=channel.name
         }
     }, [show])
