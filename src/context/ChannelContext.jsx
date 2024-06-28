@@ -21,16 +21,16 @@ export const ChannelProvider = ({ children }) => {
     const createChannel = async (data) => {
         try {
             const res = await axios.post(`${URL}/channel/create`, data)
-            return res.data;
+            return res.updateChannel;
         } catch (e){
             console.log('ERROR::' + e)
         }
     }
 
-    const updateChannel = async () => {
+    const updateChannel = async (data) => {
         try {
-            const res = await axios.post(`${URL}/channel/update`)
-            return res.data;
+            const res = await axios.put(`${URL}/channel/update`, data)
+            return res.updateChannel;
         } catch (e){
             console.log('ERROR::' + e)
         }

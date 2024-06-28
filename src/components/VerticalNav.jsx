@@ -66,7 +66,7 @@ export const VerticalNav = () => {
                                 <span className="ml-3" onClick={() => navigateTo("/notification")}>Notification</span>
                             </a>
                         </li>
-                        {/* <li className="my-px">
+                        <li className="my-px">
                             <a href="#"
                                 className="flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-gray-100">
                                 <span className="flex items-center justify-center text-lg text-gray-400">
@@ -80,9 +80,9 @@ export const VerticalNav = () => {
                                         <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                                     </svg>
                                 </span>
-                                <span className="ml-3" onClick={() => navigateTo("/seting")}>Setting</span>
+                                <span className="ml-3" onClick={() => navigateTo("/setting")}>Setting</span>
                             </a>
-                        </li> */}
+                        </li>
                 
                     </ul>
                 </div>
