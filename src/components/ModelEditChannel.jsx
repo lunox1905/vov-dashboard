@@ -1,48 +1,51 @@
-import React, { useEffect } from 'react';
-import { useState ,useRef} from 'react';
+import React from 'react';
+import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 const ModelEditChannel = (props) => {
-    const { show, setShow,  channel, handleSubmitChannelName, handleAddStream,handleDeleteChannel } = props
-    const [tempChannelName, setTempChannelName] = useState("")
+    // eslint-disable-next-line react/prop-types
+    const { show, setShow,  channel, handleSubmitChannelName, handleAddStream,handleDeleteChannel } = props;
+    // eslint-disable-next-line no-unused-vars
     const [currentScreen, setCurrentScreen] = useState('screen1');
-    const [newLinkStream, setNewLinkStream] = useState('')
-    const [streamName, setStreamName] = useState("")
-    const inputChannelName=useRef(null)
-    useEffect(() => {
-        if (channel?.name&& inputChannelName?.current?.value) {
-            inputChannelName.current.value=channel.name
-        }
-    }, [show])
-
-    const updateChannelName = () => {
-        handleSubmitChannelName(channel.id,inputChannelName.current.value)
-    }
-    const ChannelName = () => {
+    
+    const UpdateChannel = () => {
+        const [name, setName] = useState('')
+        const [description, setDesciption] = useState("")
         return (
             <>
-                <div className='flex'> 
+                <div className=''> 
                     <input
-                    ref={inputChannelName}
-                        className='mr-2 border-1 w-[60%] h-[32px] rounded-sm p-2' type="text" placeholder='Tên kênh'  />
-                    <Button onClick={()=> updateChannelName()} >Cập nhật</Button>
+                        className='mr-2 my-2 border-1 w-[100%] h-[32px] rounded-sm p-2' 
+                        type="text" 
+                        placeholder='Tên kênh'
+                        value={name} onChange={(e) => setName(e.target.value)}
+                    />
+                    <input
+                        className='mr-2 my-2 border-1 w-[100%] h-[32px] rounded-sm p-2' 
+                        type="text" 
+                        placeholder='Mổ tả' 
+                        value={description} onChange={(e) => setDesciption(e.target.value)}
+                    />
+                    <Button className='mt-2' onClick={()=> handleSubmitChannelName({ name, description, id: channel.id })} >Cập nhật</Button>
                 </div>
 
             </>
         )
     }
     const AddLinkStream = () => {
+        const [newLinkStream, setNewLinkStream] = useState('')
+        const [streamName, setStreamName] = useState("")
         return (<>
        
             <div className='flex'>
                 <div className='flex flex-col w-screen gap-2'>
 
-                <input className='mr-2 border-1 w-[60%] h-[32px] rounded-sm p-2' type="text" placeholder='Tên luồng' value={streamName} onChange={(e) => setStreamName(e.target.value)} />
+                <input className='mr-2 border-1 w-[60%] h-[32px] rounded-sm p-2' placeholder='Tên luồng' value={streamName} onChange={(e) => setStreamName(e.target.value)} />
                 <input className='mr-2 border-1 w-[60%] h-[32px] rounded-sm p-2' type="text" placeholder='URL link stream' value={newLinkStream} onChange={(e) => setNewLinkStream(e.target.value)} />
                 </div>
 
-            <Button className='h-[50px]'>Thêm</Button>
+            <Button className='h-[50px]' onClick={() => handleAddStream({name: streamName, link: newLinkStream, channelId: channel.id})}>Thêm</Button>
         </div>
         </>)
 
@@ -51,7 +54,7 @@ const ModelEditChannel = (props) => {
         return (<>
             <div className='flex justify-center'>
 
-            <Button variant='danger'>Xóa kênh </Button>
+            <Button variant='danger' onClick={() => handleDeleteChannel({id: channel.id})}>Xóa kênh </Button>
             </div>
         </>)
     }
@@ -59,7 +62,7 @@ const ModelEditChannel = (props) => {
     const renderScreen = () => {
         switch (currentScreen) {
             case "screen1":
-                return <ChannelName />;
+                return <UpdateChannel />;
             case "screen2":
                 return <AddLinkStream />;
             case "screen3":
@@ -82,7 +85,7 @@ const ModelEditChannel = (props) => {
 
                 <ul className='flex justify-around'>
                     <li onClick={() => setCurrentScreen('screen1')} className="cursor-pointer  block p-2 text-sm font-semibold hover:underline rounded " >
-                        Tên kênh
+                        Sửa kênh
                     </li>
                     <li onClick={() => setCurrentScreen('screen2')} className="cursor-pointer  block p-2 text-sm font-semibold hover:underline rounded ">
                         Thêm luồng stream

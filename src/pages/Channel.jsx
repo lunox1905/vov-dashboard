@@ -13,7 +13,7 @@ import { ChannelContext } from "../context/ChannelContext";
 import axios from "axios";
 export const Channel = () => {
     const { socket } = useContext(SocketContext);
-    const {  listChannel, createChannel,updateChannel } = useContext(ChannelContext);
+    const {  listChannel, createChannel,updateChannel, deleteChannel } = useContext(ChannelContext);
     const [ listPro, setListPro] = useState([]);
     const [ openModel, setOpenModel ] = useState(false)
     const [ openModelAddChannel, setOpenModelAddChannel ] = useState(false)
@@ -23,9 +23,6 @@ export const Channel = () => {
         id: "",
         name: ""
     })
-
-    const hlsLink="http://examples.hls"
-    console.log(import.meta.env.VITE_URL)
     useEffect(() => {
         if (socket) {
             socket.on('connect', () => {
@@ -40,7 +37,8 @@ export const Channel = () => {
                 setListPro(data)
             })
 
-            socket.on('add-channel-directlink-success', () => {
+            socket.on('add-directlink-success', () => {
+                console.log('==========')
                 socket.emit('list-producer')
             })
 
@@ -57,20 +55,12 @@ export const Channel = () => {
         }
     }, [socket]);
 
-    useEffect(() => {
-        listChannel()
-        .then(res => {
-            console.log(res)
-        })
-    }, []);
-
-    const handleDelete = (channelId, id) => {
+    const handleDelete = ({channelId, id}) => {
         setDataDelete({
             id,
             channelId
         })
         setOpenModel(true)
-        console.log(dataDelete)
     }
 
     const deletePro = () => {
@@ -81,31 +71,34 @@ export const Channel = () => {
 
     const handleAddChannel = ({ name, description }) => {
         createChannel({name, description})
-        .then(res => {
-            console.log("RES::::", res)
+        .then(() => {
+            socket.emit('list-producer')
+            toast.success("Successfully add channel")
         })
     } 
 
-    const handleAddStream = ({ name, link, note, uid }) => {
-        socket.emit('link-stream', { name, link, note, uid})
+    const handleAddStream = (data) => {
+       socket.emit('link-stream', data)
+       setOpenModelEditChannel(false)
     } 
-    const handleDeleteChannel = (id) => {
-        
+    const handleDeleteChannel = (data) => {
+        deleteChannel(data)
+        .then(() => {
+            socket.emit('list-producer')
+            setOpenModelEditChannel(false)
+        })
     }
-    const handleSubmitChannelName = async (id, newName) => {
-
+    const handleSubmitChannelName = async (data) => {
         try {
-            console.log("update",id,newName)
             updateChannel({
-                id: id,
-                name:newName
+                ...data
             }).then(res => {
-                console.log("RES::::", res)
                 if (res) {
                     toast.error(res)
-                return
+                    socket.emit('list-producer')
+                    setOpenModelEditChannel(false)
                 }
-                toast.success("Successfully update name")
+                toast.success("Successfully update channel")
             })
         } catch (error) {
             toast.error(error)
@@ -131,7 +124,6 @@ export const Channel = () => {
     const openEditModal = (channel) => {
         setCurrentChannel(channel)
         setOpenModelEditChannel(true)
-
     }
     return (
         <>
@@ -145,7 +137,7 @@ export const Channel = () => {
                 />
 
             }
-        <ModelAddChannel show={openModelAddChannel} setShow={setOpenModelAddChannel} handle={handleAddChannel}/>
+            <ModelAddChannel show={openModelAddChannel} setShow={setOpenModelAddChannel} handle={handleAddChannel}/>
             <ModelEditChannel
                 show={openModelEditChannel}
                 setShow={setOpenModelEditChannel} 
@@ -164,34 +156,32 @@ export const Channel = () => {
                 <thead>
                     <tr className="">
                         <th className="px-3">Tên kênh</th>
+                        <th>Channel ID</th>
                         <th>Số luồng</th>
                         <th>Loại luồng</th>
                         <th>Trạng thái</th>
                         <th>Cổng</th>
-                            <th>Mô tả</th>
-                            <th> Hls link</th>
                         <th className="text-center">Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        listPro?.map(item => (
+                        listPro?.map((item, i) => (
                             <>
-                            <tr key={item.name} className="h-12 border-t-2 px-3">
-                                <td className="px-3 w-[150px]">{item.name} </td>
+                            <tr key={i} className="h-12 border-t-2 px-3">
+                                <td className="px-3 w-[220px]">{item.name} </td>
+                                <td>{item.id} </td>
                                 <td className="w-[120px]">{item.streams.length}</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                    <td></td>
-                                    <td> http://example.com </td>
-
-                                    <td onClick={()=>openEditModal(item)} className="text-center cursor-pointer"> . . .</td>
+                                <td onClick={()=>openEditModal(item)} className="text-center cursor-pointer"> . . .</td>
                             </tr>
                             {
                                 item.streams.map(pro => (
                                     <tr key={pro.name} className="h-12 border-t-2" style={{background: "rgb(240 242 245)"}}>
                                         <td className="px-3"></td>
+                                        <td></td>
                                         <td></td>
                                         <td className="w-[120px]">{pro.isMainInput ? 
                                             <Button size="sm" variant="outline-primary">Main</Button> : 
@@ -201,14 +191,13 @@ export const Channel = () => {
                                             <Button size="sm" variant="outline-primary">Play</Button> : 
                                             <Button size="sm" variant="outline-danger">Stop</Button>}</td>
                                         <td>{pro.port}</td>
-                                        <td>{pro.descripton}</td>
                                         <td className="w-[120px]">
                                             <div  className=" w-full flex justify-around">
-                                                < div className="cursor-pointer" onClick={() => openEditModal(item.name)}>
+                                                {/* <div className="cursor-pointer" onClick={() => openEditModal(item)}>
                                                     <EditIcon />
-                                                </div>
+                                                </div> */}
                         
-                                                <div className="cursor-pointer" onClick={() => handleDelete(pro.name, pro.id)}>
+                                                <div className="cursor-pointer" onClick={() => handleDelete({channelId: item.id, id: pro.id})}>
                                                     <Trash/>
                                                 </div>
                                             </div>
