@@ -24,9 +24,10 @@ const ModelEditChannel = (props) => {
                     <input
                         className='mr-2 my-2 border-1 w-[100%] h-[32px] rounded-sm p-2' 
                         type="text" 
-                        placeholder='Mổ tả' 
+                        placeholder='Mô tả' 
                         value={description} onChange={(e) => setDesciption(e.target.value)}
                     />
+                    <p>Link Play HLS: {channel.linkHls}</p>
                     <Button className='mt-2' onClick={()=> handleSubmitChannelName({ name, description, id: channel.id })} >Cập nhật</Button>
                 </div>
 

@@ -1,10 +1,36 @@
 import {  useNavigate } from 'react-router-dom';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const VerticalNav = () => {
     const navigate = useNavigate();
     const navigateTo = (subpath) => {
         navigate(subpath)
+    }
+    const [ hasNewLog, setHasNewLog ] = useState(false);
+
+    useEffect(() => {
+        checkNewLog()
+    }, [])
+    const checkNewLog = () => {
+        const check = async () => {
+            const response = await axios.get(`${import.meta.env.VITE_URL}/logs/check-new-log`,)
+            return response.data;
+        }
+        check().then(newLogs => {
+            setHasNewLog(newLogs.hasNew)
+        })
+    }
+
+    const handleClickNotifi = () => {
+        const readAllProcess = async () => {
+            const response = await axios.post(`${import.meta.env.VITE_URL}/logs/read-all`);
+            return response.data;
+        }
+        readAllProcess()
+        
+        setHasNewLog(false)
+        navigateTo("/notification")
     }
     return (
         <>
@@ -50,7 +76,7 @@ export const VerticalNav = () => {
                             
                         </li>
                         <li className="my-px">
-                            <div onClick={() => navigateTo("/notification")} className="cursor-pointer flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-gray-100">
+                            <div onClick={handleClickNotifi} className="cursor-pointer flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-gray-100">
                                 <span className="flex items-center justify-center text-lg text-gray-400">
                                     <svg fill="none"
                                         strokeLinecap="round"
@@ -63,8 +89,12 @@ export const VerticalNav = () => {
                                     </svg>
                                 </span>
                                 <span className="ml-3" >Notification</span>
+                                {
+                                    hasNewLog && <div className='flex items-center justify-center w-[16px] h-[16px] ml-2 bg-rose-500 rounded-full'>
+                                    <span style={{color: 'white', fontWeight: 600}}>!</span>
+                                </div>
+                                }
                             </div>
-                           
                         </li>
                     
                         <li className="my-px">
