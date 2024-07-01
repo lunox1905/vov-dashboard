@@ -1,8 +1,10 @@
 import {  useNavigate } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
+import { SocketContext } from '../context/SocketContext';
 export const VerticalNav = () => {
+    const { socket } = useContext(SocketContext);
     const navigate = useNavigate();
     const navigateTo = (subpath) => {
         navigate(subpath)
@@ -11,6 +13,10 @@ export const VerticalNav = () => {
 
     useEffect(() => {
         checkNewLog()
+
+        socket.on('new-noti', () => {
+            setHasNewLog(true)
+        })
     }, [])
     const checkNewLog = () => {
         const check = async () => {
